@@ -2,6 +2,9 @@
   CS661 - Big Data Visual Analytics
   Assignment 1: Isocontour and Volume Visualization
   Group Number: 38
+  Team Members: Utkarsh Aman (241114)
+                Praveen (240709)
+                Vishakha sharma (241173)
 ================================================================================
 
 

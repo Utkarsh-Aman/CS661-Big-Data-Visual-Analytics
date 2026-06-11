@@ -4,14 +4,16 @@ contour.py - 2D Isocontour Extraction from VTK Image Data
 CS661 Assignment 1, Part 1 [80 Points]
 
 This script extracts isocontours from a 2D scalar field stored in VTK Image Data
-format using a manual implementation of the Marching Squares algorithm.
-We traverse edges in CCW order to detect crossings.
+format by manually traversing edges in CCW order to detect crossings.
+
 
 Usage:
     python contour.py --input <input.vti> --isovalue <value> --output <output.vtp>
 
-Author: Group 38
-Course: CS661 - Big Data Visual Analytics
+    or simply 
+    python contour.py
+    (this will use default values for input file, isovalue and output file)
+
 """
 
 import argparse
@@ -19,14 +21,14 @@ import sys
 import vtk
 
 
-# ==============================================================================
+
 # SECTION 1: ARGUMENT PARSING
-# ==============================================================================
+
 
 def parse_arguments():
-    """Parse and validate command-line arguments."""
+    # parse and validate command line arguments.
     parser = argparse.ArgumentParser(
-        description="Extract 2D isocontour using manual Marching Squares."
+        description="Extract 2D isocontour by manually traversing edges in CCW order to detect crossings."
     )
     parser.add_argument(
         "--input",
@@ -58,12 +60,13 @@ def parse_arguments():
     return args
 
 
-# ==============================================================================
+
+
 # SECTION 2: VTK IMAGE DATA READER
-# ==============================================================================
+
 
 def read_vti_file(filepath):
-    """Read a VTK Image Data file (.vti) and return the vtkImageData."""
+    #read a VTK Image Data file (.vti) and return the vtkImageData.
     print(f"\n[Step 1] Reading input file: {filepath}")
 
     reader = vtk.vtkXMLImageDataReader()
@@ -90,21 +93,20 @@ def read_vti_file(filepath):
     return image_data
 
 
-# ==============================================================================
+
 # SECTION 3: EDGE CROSSING DETECTION
-# ==============================================================================
+
 
 def edge_crosses_isovalue(scalar_start, scalar_end, isovalue):
-    """Determine whether the isocontour crosses the edge from vertex A to vertex B."""
+    # Determine whether the isocontour crosses the edge from vertex A to vertex B.
     return (scalar_start < isovalue) != (scalar_end < isovalue)
 
 
-# ==============================================================================
 # SECTION 4: LINEAR INTERPOLATION
-# ==============================================================================
+
 
 def interpolate_crossing_point(point_start, point_end, scalar_start, scalar_end, isovalue):
-    """Compute the exact 3D position where the isocontour crosses the edge."""
+    #compute the exact 3D position where the isocontour crosses the edge.
     t = (isovalue - scalar_start) / (scalar_end - scalar_start)
 
     x = point_start[0] + t * (point_end[0] - point_start[0])
@@ -114,12 +116,11 @@ def interpolate_crossing_point(point_start, point_end, scalar_start, scalar_end,
     return (x, y, z)
 
 
-# ==============================================================================
 # SECTION 5: CORE ISOCONTOUR EXTRACTION ALGORITHM
-# ==============================================================================
+
 
 def extract_isocontour(image_data, isovalue):
-    """Extract isocontour line segments from a 2D vtkImageData."""
+    # Extract isocontour line segments from a 2D vtkImageData.
     print(f"\n[Step 2] Extracting isocontour for isovalue = {isovalue} ...")
 
     dims = image_data.GetDimensions()
@@ -223,12 +224,12 @@ def extract_isocontour(image_data, isovalue):
     return output_polydata
 
 
-# ==============================================================================
+
 # SECTION 6: VTP FILE WRITER
-# ==============================================================================
+
 
 def write_vtp_file(polydata, filepath):
-    """Write vtkPolyData to disk as a VTK XML PolyData file (.vtp)."""
+    # Write vtkPolyData to disk as a VTK XML PolyData file (.vtp).
     print(f"\n[Step 3] Writing output to: {filepath}")
 
     writer = vtk.vtkXMLPolyDataWriter()
@@ -245,9 +246,9 @@ def write_vtp_file(polydata, filepath):
         sys.exit(1)
 
 
-# ==============================================================================
+
 # MAIN ENTRY POINT
-# ==============================================================================
+
 
 def main():
     print("=" * 65)
