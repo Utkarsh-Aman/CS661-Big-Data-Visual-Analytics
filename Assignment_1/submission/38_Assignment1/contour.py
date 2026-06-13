@@ -51,11 +51,9 @@ def parse_arguments():
         metavar="OUTPUT.vtp",
         help="Path for the output VTK PolyData file (.vtp) [default: contour_-200.vtp]"
     )
+    # parser.add_argument()
 
     args = parser.parse_args()
-
-    if not args.output.lower().endswith(".vtp"):
-        print("[WARNING] Output file does not end with '.vtp'.")
 
     return args
 
@@ -151,7 +149,7 @@ def extract_isocontour(image_data, isovalue):
             # Compute corner IDs
             id_v0 = j * nx + i
             id_v1 = j * nx + (i + 1)
-            id_v2 = (j + 1) * nx + (i + 1)
+            id_v2 = (j+ 1) * nx + (i + 1)
             id_v3 = (j + 1) * nx + i
 
             # Coordinates
@@ -251,9 +249,9 @@ def write_vtp_file(polydata, filepath):
 
 
 def main():
-    print("=" * 65)
-    print("  CS661 Assignment 1 -- Part 1: 2D Isocontour Extraction")
-    print("=" * 65)
+    print("=" * 65) # will print = 65 times 
+    print("  CS661 Assignment 1 -- Part 1: 2D Isocontour Extraction") 
+    print("=" * 65) 
 
     args = parse_arguments()
 
