@@ -65,28 +65,17 @@ def parse_arguments():
 
 def read_vti_file(filepath):
     #read a VTK Image Data file (.vti) and return the vtkImageData.
-    print(f"\n[Step 1] Reading input file: {filepath}")
+    print(f"Reading input file: {filepath}")
 
     reader = vtk.vtkXMLImageDataReader()
     reader.SetFileName(filepath)
 
     if not reader.CanReadFile(filepath):
-        print(f"[ERROR] Cannot read file: {filepath}")
+        print(f"Error: Cannot read file: {filepath}")
         sys.exit(1)
 
     reader.Update()
     image_data = reader.GetOutput()
-
-    dimensions = image_data.GetDimensions()
-    spacing = image_data.GetSpacing()
-    origin = image_data.GetOrigin()
-    scalar_range = image_data.GetScalarRange()
-
-    print(f"  Grid dimensions (points): {dimensions[0]} x {dimensions[1]} x {dimensions[2]}")
-    print(f"  Grid spacing:             {spacing[0]:.4f} x {spacing[1]:.4f} x {spacing[2]:.4f}")
-    print(f"  Origin:                   ({origin[0]:.4f}, {origin[1]:.4f}, {origin[2]:.4f})")
-    print(f"  Number of cells:          {image_data.GetNumberOfCells()}")
-    print(f"  Scalar data range:        [{scalar_range[0]:.3f}, {scalar_range[1]:.3f}]")
 
     return image_data
 
@@ -119,7 +108,7 @@ def interpolate_crossing_point(point_start, point_end, scalar_start, scalar_end,
 
 def extract_isocontour(image_data, isovalue):
     # Extract isocontour line segments from a 2D vtkImageData.
-    print(f"\n[Step 2] Extracting isocontour for isovalue = {isovalue} ...")
+    print(f"Extracting isocontour for isovalue = {isovalue}...")
 
     dims = image_data.GetDimensions()
     nx = dims[0]
@@ -128,12 +117,9 @@ def extract_isocontour(image_data, isovalue):
     num_cells_x = nx - 1
     num_cells_y = ny - 1
 
-    print(f"  Grid: {nx} x {ny} points  ->  {num_cells_x} x {num_cells_y} cells")
-    print(f"  Total cells to process: {num_cells_x * num_cells_y}")
-
     scalars = image_data.GetPointData().GetScalars()
     if scalars is None:
-        print("[ERROR] No scalar data found in the input file!")
+        print("Error: No scalar data found in the input file!")
         sys.exit(1)
 
     output_points = vtk.vtkPoints()
@@ -205,19 +191,11 @@ def extract_isocontour(image_data, isovalue):
                 cells_ambiguous_skipped += 1
                 continue
 
-    print(f"\n  Extraction complete:")
-    print(f"    Contour segments generated:  {total_segments_added}")
-    print(f"    Cells with no crossing:      {cells_with_no_crossing}")
-    if cells_ambiguous_skipped > 0:
-        print(f"    Ambiguous cells skipped:     {cells_ambiguous_skipped}")
-
     output_polydata = vtk.vtkPolyData()
     output_polydata.SetPoints(output_points)
     output_polydata.SetLines(output_cell_array)
 
-    print(f"\n  Output PolyData:")
-    print(f"    Total points:        {output_polydata.GetNumberOfPoints()}")
-    print(f"    Total line segments: {output_polydata.GetNumberOfCells()}")
+    print(f"Extraction complete: generated {output_polydata.GetNumberOfPoints()} points and {output_polydata.GetNumberOfCells()} line segments")
 
     return output_polydata
 
@@ -228,8 +206,6 @@ def extract_isocontour(image_data, isovalue):
 
 def write_vtp_file(polydata, filepath):
     # Write vtkPolyData to disk as a VTK XML PolyData file (.vtp).
-    print(f"\n[Step 3] Writing output to: {filepath}")
-
     writer = vtk.vtkXMLPolyDataWriter()
     writer.SetFileName(filepath)
     writer.SetInputData(polydata)
@@ -238,9 +214,9 @@ def write_vtp_file(polydata, filepath):
     success = writer.Write()
 
     if success:
-        print(f"  [SUCCESS] File written: {filepath}")
+        print(f"Successfully wrote output file: {filepath}")
     else:
-        print(f"  [ERROR] Failed to write file: {filepath}")
+        print(f"Error: Failed to write file: {filepath}")
         sys.exit(1)
 
 
@@ -249,34 +225,22 @@ def write_vtp_file(polydata, filepath):
 
 
 def main():
-    print("=" * 65) # will print = 65 times 
-    print("  CS661 Assignment 1 -- Part 1: 2D Isocontour Extraction") 
-    print("=" * 65) 
-
     args = parse_arguments()
-
-    print(f"\nRun parameters:")
-    print(f"  Input file : {args.input}")
-    print(f"  Isovalue   : {args.isovalue}")
-    print(f"  Output file: {args.output}")
 
     image_data = read_vti_file(args.input)
 
     scalar_range = image_data.GetScalarRange()
+    print(f"Scalar data range: [{scalar_range[0]:.3f}, {scalar_range[1]:.3f}]")
+
     if not (scalar_range[0] <= args.isovalue <= scalar_range[1]):
-        print(f"\n[WARNING] Isovalue {args.isovalue} is OUTSIDE the data scalar range!")
-        print(f"          Data range: [{scalar_range[0]:.3f}, {scalar_range[1]:.3f}]")
+        print(f"Warning: Isovalue {args.isovalue} is outside the scalar data range!")
 
     contour_polydata = extract_isocontour(image_data, args.isovalue)
 
     if contour_polydata.GetNumberOfCells() == 0:
-        print("\n[WARNING] No contour segments were generated!")
+        print("Warning: No contour segments were generated.")
 
     write_vtp_file(contour_polydata, args.output)
-
-    print("\n" + "=" * 65)
-    print("  Isocontour extraction complete!")
-    print("=" * 65)
 
 
 if __name__ == "__main__":

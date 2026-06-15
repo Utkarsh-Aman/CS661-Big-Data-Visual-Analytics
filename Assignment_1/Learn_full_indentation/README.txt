@@ -2,22 +2,17 @@
   CS661 - Big Data Visual Analytics
   Assignment 1: Isocontour and Volume Visualization
   Group Number: 38
+  Team Members: Utkarsh Aman (241114)
+                Praveen (240709)
+                Vishakha sharma (241173)
+  All the codes are written by all three of us with almost equal contribution but
+  this submission is done by Utkarsh.
+  CITATIONS: resources provided in class lectures (especially 5 & 6).
+  USE OF AI Tools: for readme.txt from plain english to beautification for proper readability.
+  No AI was used for the code writing BUT for understanding the concepts of resources.
+  NO CODE FROM THE INTERNET WAS USED DIRECTLY IN THE CODE HOWEVER SOME
+  CODE STRUCTURE MAY BE SIMILAR TO SOME ONLINE RESOURCES AND LECTURES BUT AT BASIC LEVEL ONLY. 
 ================================================================================
-
-This README describes exactly how to set up and run the two Python scripts
-submitted for Assignment 1.
-
---------------------------------------------------------------------------------
-  CONTENTS OF THIS SUBMISSION
---------------------------------------------------------------------------------
-
-  38_Assignment1/
-  ├── contour.py        - Part 1: 2D Isocontour Extraction [80 pts]
-  ├── volume_render.py  - Part 2: Volume Rendering          [20 pts]
-  └── README.txt        - This file
-
-Note: The .venv/ folder (virtual environment) must be created by the grader
-      using the instructions below. It is not included in the zip file.
 
 --------------------------------------------------------------------------------
   REQUIREMENTS
@@ -27,9 +22,74 @@ Note: The .venv/ folder (virtual environment) must be created by the grader
   - pip (comes with Python)
   - VTK library (vtk >= 9.x)
 
-  Dataset files (NOT included in zip, must be placed separately):
+  Dataset files (Included in zip):
     - Isabel_2D.vti  → for Part 1 (contour.py)
     - Isabel_3D.vti  → for Part 2 (volume_render.py)
+
+--------------------------------------------------------------------------------
+  QUICK START SUMMARY (COPY-PASTE COMMANDS) (Detailed walk-through is in the sections below)
+--------------------------------------------------------------------------------
+
+  # 1. Navigate to the submission folder
+  cd path/to/38_Assignment1
+
+  # 2. Create and activate virtual environment
+  python -m venv .venv
+  .venv\Scripts\activate          # Windows(my system)
+  # source .venv/bin/activate     # Linux/macOS
+
+  # 3. Install VTK
+  pip install vtk
+
+  # 4. Run Part 1 (isocontour,give correct path to dataset)(default isovalue is -200 and input file is Isabel_2D.vti)
+  python contour.py  
+
+  OR for custom input file, isovalue and output file  
+
+  python contour.py --input path/to/Isabel_2D.vti --isovalue -200 --output contour_-200.vtp
+
+  # 5. Run Part 2 (volume rendering, no shading,give correct path to dataset)(default input file is Isabel_3D.vti)
+  python volume_render.py
+
+  OR for custom input file
+
+  python volume_render.py --input path/to/Isabel_3D.vti
+
+  # 6. Run Part 2 (volume rendering, with Phong shading,give correct path to dataset)
+  python volume_render.py --phong
+
+  OR for custom input file
+  
+  python volume_render.py --input path/to/Isabel_3D.vti --phong
+
+
+
+This README describes in detail on how to set up and run the two Python scripts
+submitted for Assignment 1.
+
+--------------------------------------------------------------------------------
+  CONTENTS 
+--------------------------------------------------------------------------------
+
+  38_Assignment1/
+  ├── contour.py        - Part 1: 2D Isocontour Extraction 
+  ├── volume_render.py  - Part 2: Volume Rendering          
+  └── README.txt        - This file
+  ├── Isabel_2D.vti   -> Dataset for part 1 (path provided by user in execution by default it is in the same directory as the scripts)
+  ├── Isabel_3D.vti   -> Dataset for part 2 (path provided by user in execution by default it is in the same directory as the scripts)
+  ├── .venv           -> Virtual environment folder (created by the grader i am not zipping it)
+  ├── FINAL_IMAGE     -> IMAGE downloaded from paraview presenting data and 4 contour lines.
+
+#below are created after running the scripts (multiple of them can be created by changing the isovalue and output file name)
+  ├── contour_-200.vtp -> Output of part 1 for isovalue = -200
+  ├── contour_-900.vtp -> Output of part 1 for isovalue = -900
+  ├── contour_100.vtp -> Output of part 1 for isovalue = 100
+  ├── volume_rendering_no_phong.png -> Output of part 2 (no phong shading)
+  └── volume_rendering_phong.png    -> Output of part 2 (with phong shading)
+
+Note: The .venv/ folder (virtual environment) must be created 
+      using the instructions above. It is not included in the zip file.
+
 
 --------------------------------------------------------------------------------
   STEP 1: SET UP THE VIRTUAL ENVIRONMENT
@@ -46,7 +106,7 @@ Note: The .venv/ folder (virtual environment) must be created by the grader
   Activate the virtual environment:
     .venv\Scripts\activate
 
-  Verify activation (you should see (.venv) in your prompt).
+  Verify activation (should see (.venv) in your prompt).
 
   On Linux / macOS:
   -----------------
@@ -70,7 +130,7 @@ Note: The .venv/ folder (virtual environment) must be created by the grader
   Verify VTK is installed correctly:
     python -c "import vtk; print(vtk.vtkVersion.GetVTKVersion())"
 
-  You should see a version number like: 9.x.x
+  Should see a version number like: 9.x.x
 
 --------------------------------------------------------------------------------
   STEP 3: RUN PART 1 — 2D ISOCONTOUR EXTRACTION (contour.py)
@@ -78,52 +138,49 @@ Note: The .venv/ folder (virtual environment) must be created by the grader
 
   DESCRIPTION:
     contour.py extracts isocontour line segments from a 2D scalar field
-    stored in a VTK Image Data (.vti) file. It implements a simplified
-    Marching Squares algorithm WITHOUT using VTK's built-in contour filters.
+    stored in a VTK Image Data (.vti) file.
 
   COMMAND FORMAT:
     python contour.py --input <path/to/Isabel_2D.vti> --isovalue <VALUE> --output <output.vtp>
 
   PARAMETERS:
-    --input    : Path to the input Isabel_2D.vti file (required)
-    --isovalue : A floating point number for the scalar isovalue (required)
+    --input    : Path to the input Isabel_2D.vti file(default Isabel_2D.vti)
+    --isovalue : A floating point number for the scalar isovalue (default -200)
                  Valid range for Isabel_2D.vti: approximately -1438 to 630
-    --output   : Path for the output .vtp file (required)
+    --output   : Path for the output .vtp file(default contour_-200.vtp) 
                  The file will be written in VTK XML PolyData format.
 
   EXAMPLES:
+  #by default the input file is Isabel_2D.vti , isovalue is -200 and output file is contour_-200.vtp
 
     Example 1 (isovalue = -200):
       python contour.py --input Isabel_2D.vti --isovalue -200 --output contour_-200.vtp
 
-    Example 2 (isovalue = -900):
-      python contour.py --input Isabel_2D.vti --isovalue -900 --output contour_-900.vtp
-
-    Example 3 (isovalue = 100):
+    Example 2 (isovalue = 100):
       python contour.py --input Isabel_2D.vti --isovalue 100 --output contour_100.vtp
 
-    Example 4 (if data is in a different directory):
+    Example 3 (if data is in a different directory but i have submitted the data along with the script so you dont have to change it):
       python contour.py --input ../Data/Isabel_2D.vti --isovalue -200 --output contour.vtp
 
-  EXPECTED OUTPUT:
+  EXPECTED OUTPUT(As per testing):
     - A .vtp file is created at the specified output path.
     - The terminal prints progress messages and the number of segments generated.
     - Example terminal output:
-        [Step 1] Reading input file: Isabel_2D.vti
-          Grid dimensions (points): 500 x 500 x 1
-          Scalar data range: [-1438.xxx, 630.xxx]
-        [Step 2] Extracting isocontour for isovalue = -200.0 ...
-          Contour segments generated: XXXX
-        [Step 3] Writing output to: contour_-200.vtp
-          [SUCCESS] File written: contour_-200.vtp
+(.venv) PS C:\Users\utkar\Desktop\projects\CS661\Assignment_CS661\Assignment_1\submission\38_Assignment1> python contour.py --input Isabel_2D.vti --isovalue -200 --output contour_-200.vtp
+Reading input file: Isabel_2D.vti
+Scalar data range: [-1434.859, 630.569]
+Extracting isocontour for isovalue = -200...
+Extraction complete: generated 500 points and 250 line segments
+Successfully wrote output file: contour_-200.vtp
+
+A FILE HAS GENERATED NAMED contour_-200.vtp IN THE SAME DIRECTORY AS THE PYTHON FILE(i.e. /38_Assignment1/)
 
   HOW TO VISUALIZE IN PARAVIEW:
     1. Open ParaView.
-    2. File → Open → select your output .vtp file.
+    2. File → Open → select output .vtp file generated.
     3. Click "Apply" in the Properties panel.
     4. The isocontour lines will appear in the 3D view.
-    5. If the background is white, change the contour color:
-       Properties → Coloring → Solid Color → choose a visible color (e.g., red).
+    
 
 --------------------------------------------------------------------------------
   STEP 4: RUN PART 2 — VOLUME RENDERING (volume_render.py)
@@ -135,17 +192,24 @@ Note: The .venv/ folder (virtual environment) must be created by the grader
     opacity transfer functions and optionally enables Phong shading.
 
   COMMAND FORMAT (WITHOUT Phong shading — default):
+    python volume_render.py
+
+  or if data is else where
     python volume_render.py --input <path/to/Isabel_3D.vti>
 
   COMMAND FORMAT (WITH Phong shading):
-    python volume_render.py --input <path/to/Isabel_3D.vti> --phong
+    python volume_render.py --phong
+
+  or if data is else where
+  python volume_render.py --input <path/to/Isabel_3D.vti> --phong
 
   PARAMETERS:
-    --input  : Path to the input Isabel_3D.vti file (required)
+    --input  : Path to the input Isabel_3D.vti file(default Isabel_3D.vti)
     --phong  : Optional flag. If provided, enables Phong shading with:
                Ambient=0.5, Diffuse=0.5, Specular=0.5
 
   EXAMPLES:
+  default valuve of input file is Isabel_3D.vti
 
     Example 1 (without Phong shading):
       python volume_render.py --input Isabel_3D.vti
@@ -174,10 +238,10 @@ Note: The .venv/ folder (virtual environment) must be created by the grader
 
   NOTE:
     The volume rendering window is INTERACTIVE — it does not close automatically.
-    The script will exit once you close the window (or press 'q').
+    The script will exit once close the window (or press 'q').
 
 --------------------------------------------------------------------------------
-  TRANSFER FUNCTION VALUES (PART 2)
+  TRANSFER FUNCTION VALUES (PART 2) same as given in assignment
 --------------------------------------------------------------------------------
 
   Color Transfer Function:
@@ -202,50 +266,9 @@ Note: The .venv/ folder (virtual environment) must be created by the grader
     Diffuse  = 0.5
     Specular = 0.5
 
---------------------------------------------------------------------------------
-  QUICK START SUMMARY (COPY-PASTE COMMANDS)
---------------------------------------------------------------------------------
-
-  # 1. Navigate to the submission folder
-  cd path/to/38_Assignment1
-
-  # 2. Create and activate virtual environment
-  python -m venv .venv
-  .venv\Scripts\activate          # Windows
-  # source .venv/bin/activate     # Linux/macOS
-
-  # 3. Install VTK
-  pip install vtk
-
-  # 4. Run Part 1 (isocontour)
-  python contour.py --input path/to/Isabel_2D.vti --isovalue -200 --output contour.vtp
-
-  # 5. Run Part 2 (volume rendering, no shading)
-  python volume_render.py --input path/to/Isabel_3D.vti
-
-  # 6. Run Part 2 (volume rendering, with Phong shading)
-  python volume_render.py --input path/to/Isabel_3D.vti --phong
 
 --------------------------------------------------------------------------------
-  DATASET INFORMATION
---------------------------------------------------------------------------------
-
-  The data used in this assignment is a Hurricane Simulation dataset.
-  Source: http://vis.computer.org/vis2004contest/index.html
-
-  Isabel_2D.vti:
-    - A 2D slice from a 3D Hurricane simulation
-    - Variable: Pressure
-    - Format: VTK XML Image Data (.vti)
-    - Isovalue range: approximately -1438 to 630
-
-  Isabel_3D.vti:
-    - A 3D volume from a Hurricane simulation
-    - Variable: Pressure
-    - Format: VTK XML Image Data (.vti)
-
---------------------------------------------------------------------------------
-  TROUBLESHOOTING
+  TROUBLESHOOTING THAT I FACED DURING DEVELOPMENT
 --------------------------------------------------------------------------------
 
   Q: "ModuleNotFoundError: No module named 'vtk'"
@@ -255,19 +278,10 @@ Note: The .venv/ folder (virtual environment) must be created by the grader
   Q: "Cannot read file: Isabel_2D.vti"
   A: Provide the correct path to the .vti file. Use an absolute path or
      make sure the file is in the same directory as the script.
-
-  Q: The contour .vtp file is empty (0 segments)
-  A: The isovalue may be outside the data range. Run contour.py to see the
-     scalar range printed, then choose an isovalue within that range.
+     For safety and easier execution i am zipping the dataset to the
+     same directory as the script.
 
   Q: The volume render window opens but is black/empty
   A: VTK may need a few seconds to render. Try pressing 'r' to reset the
      camera. Also check that the .vti file loaded correctly (check terminal).
-
-  Q: The render window is slow to open
-  A: Isabel_3D.vti is a large 3D dataset (~25 MB). Loading and initial
-     rendering may take 10-30 seconds depending on hardware.
-
-================================================================================
-  END OF README
-================================================================================
+     This happened with one of my teammate because of his old laptop.

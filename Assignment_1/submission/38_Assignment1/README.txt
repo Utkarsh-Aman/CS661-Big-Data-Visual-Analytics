@@ -87,8 +87,8 @@ submitted for Assignment 1.
   ├── volume_rendering_no_phong.png -> Output of part 2 (no phong shading)
   └── volume_rendering_phong.png    -> Output of part 2 (with phong shading)
 
-Note: The .venv/ folder (virtual environment) must be created by the grader
-      using the instructions below. It is not included in the zip file.
+Note: The .venv/ folder (virtual environment) must be created 
+      using the instructions above. It is not included in the zip file.
 
 
 --------------------------------------------------------------------------------
@@ -166,50 +166,19 @@ Note: The .venv/ folder (virtual environment) must be created by the grader
     - A .vtp file is created at the specified output path.
     - The terminal prints progress messages and the number of segments generated.
     - Example terminal output:
+
 (.venv) PS C:\Users\utkar\Desktop\projects\CS661\Assignment_CS661\Assignment_1\submission\38_Assignment1> python contour.py --input Isabel_2D.vti --isovalue -200 --output contour_-200.vtp
-=================================================================
-  CS661 Assignment 1 -- Part 1: 2D Isocontour Extraction
-  Simplified Marching Squares (manual implementation, no VTK filter)
-=================================================================
+Reading input file: Isabel_2D.vti
+Scalar data range: [-1434.859, 630.569]
+Extracting isocontour for isovalue = -200...
+Extraction complete: generated 500 points and 250 line segments
+Successfully wrote output file: contour_-200.vtp
 
-Run parameters:
-  Input file : Isabel_2D.vti
-  Isovalue   : -200.0
-  Output file: contour_-200.vtp
-
-[Step 1] Reading input file: Isabel_2D.vti
-  Grid dimensions (points): 250 x 250 x 1
-  Grid spacing:             1.0000 x 1.0000 x 1.0000
-  Origin:                   (0.0000, 0.0000, 0.0000)
-  Number of cells:          62001
-  Scalar data range:        [-1434.859, 630.569]
-
-[Step 2] Extracting isocontour for isovalue = -200.0 ...
-  Grid: 250 x 250 points  ->  249 x 249 cells
-  Total cells to process: 62001
-
-  Extraction complete:
-    Contour segments generated:  250
-    Cells with no crossing:      61751
-
-  Output PolyData:
-    Total points:        500
-    Total line segments: 250
-
-[Step 3] Writing output to: contour_-200.vtp
-  [SUCCESS] File written: contour_-200.vtp
-  Open this file in ParaView to visualize the isocontour.
-  Open this file in ParaView to visualize the isocontour.
-  Tip: In ParaView, change the display color if the background is white.
-
-=================================================================
-  Isocontour extraction complete!
-=================================================================
 A FILE HAS GENERATED NAMED contour_-200.vtp IN THE SAME DIRECTORY AS THE PYTHON FILE(i.e. /38_Assignment1/)
 
   HOW TO VISUALIZE IN PARAVIEW:
     1. Open ParaView.
-    2. File → Open → select your output .vtp file.
+    2. File → Open → select output .vtp file generated.
     3. Click "Apply" in the Properties panel.
     4. The isocontour lines will appear in the 3D view.
     
@@ -310,12 +279,12 @@ A FILE HAS GENERATED NAMED contour_-200.vtp IN THE SAME DIRECTORY AS THE PYTHON 
   Q: "Cannot read file: Isabel_2D.vti"
   A: Provide the correct path to the .vti file. Use an absolute path or
      make sure the file is in the same directory as the script.
+     For safety and easier execution i am zipping the dataset to the
+     same directory as the script.
 
   Q: The volume render window opens but is black/empty
   A: VTK may need a few seconds to render. Try pressing 'r' to reset the
      camera. Also check that the .vti file loaded correctly (check terminal).
+     This happened with one of my teammate because of his old laptop.
 
 
-================================================================================
-  END OF README 
-================================================================================
